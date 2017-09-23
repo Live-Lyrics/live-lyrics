@@ -1,0 +1,13 @@
+.Btn{
+    background:#2ebd59;
+    color:#fcfcfc;
+    padding:8px 25px;
+    border:1px solid transparent;
+    border-radius:25px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .Btn:focus, .Btn:active{
+    border:1px solid #638e00;
+  }
+  

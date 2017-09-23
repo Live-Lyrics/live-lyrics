@@ -1,0 +1,107 @@
+body {
+	outline:none;
+	font-family: Geneva, sans-serif;
+	font-size:13px;
+	margin:0;
+}
+
+
+a {
+	color:#23488C;
+	-webkit-transition-property: color;
+      -moz-transition-property: color;
+        -o-transition-property: color;
+       -ms-transition-property: color;
+           transition-property: color;
+
+   -webkit-transition-duration: 0.5s;
+      -moz-transition-duration: 0.5s;
+        -o-transition-duration: 0.5s;
+       -ms-transition-duration: 0.5s;
+           transition-duration: 0.5s;
+}
+
+a:hover {
+	color:red;
+}
+
+a img {
+	border:none;
+}
+
+p {
+	color:#363636;
+	margin:5px 0 10px 0;
+	line-height:21px;
+}
+
+table {
+	border-collapse:collapse;
+}
+
+td {
+	padding:0;
+	vertical-align:top;
+}
+
+
+h2 {
+	color:#4E4E4E;
+	margin:0;
+	padding:10px 10px 10px 0;
+	font-size:21px;
+	font-family:gotha, Tahoma, Geneva, sans-serif;
+	font-weight:normal;
+}
+
+div.sideButtons {
+	width:20px;
+	float:right;
+	text-align:right;
+	margin:15px 0 0 0;
+}
+
+div.sideButtons img {
+	margin-bottom:7px;
+	cursor:pointer;
+}
+
+table.content_texts {
+	z-index:5;
+	width:100%;
+}
+
+div.hrDiv {
+	margin:20px -20px;	
+	border-top:1px solid #e6e4e4;
+}
+
+div.comment {
+	padding:20px 0 15px 0;
+	line-height:18px;
+	color:#6c6c6c;
+}
+
+div.buttons{
+	margin-top:10px;
+	font-size:11px;
+}
+
+span.highlightLine {
+	display:inline-block;
+	width:100%;
+}
+
+span.lighted {
+	background:#F9F6D0;
+	display:inline-block;
+    margin: 0 -10px;
+    padding: 0 10px;
+	width:100%;
+}
+
+
+div.tags {
+	padding:0 0 15px 0;
+	margin:5px 0;
+}
