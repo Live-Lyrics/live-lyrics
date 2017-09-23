@@ -1,4 +1,12 @@
 .idea/
+.vscode
 .cache/
 Examples/
 vk_config.v2.json
+__pycache__/
+ENV/
+node_modules/
+.floo
+.flooignore
+package-lock.json
+package.json
