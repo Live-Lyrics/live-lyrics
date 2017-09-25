@@ -5,20 +5,23 @@ from urllib.parse import urlencode
 
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import requests
+import discogs_client
 
 from vk import sign_in
 from lyrics_url import amalgama_url, lyrsense_url
 from lyrics_parser import fetch_amalgama, fetch_lyrsense
 
 
-
 app = Flask(__name__)
 # vk = sign_in()
 
-#################################### - SPOTIFY - ################################
+d = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))
+
+
+#################################### - SPOTIFY - #########################
 #  Client Keys
-CLIENT_ID =  os.environ.get('SPOTIFY_CLIENT_ID')
-CLIENT_SECRET =  os.environ.get('SPOTIFY_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
 
 # Spotify URLS
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -46,6 +49,7 @@ auth_query_parameters = {
     # "show_dialog": SHOW_DIALOG_str,
     "client_id": CLIENT_ID
 }
+
 
 @app.route("/login")
 def login():
@@ -78,12 +82,10 @@ def callback():
 
     # redirect_to_index = redirect(url_for('http://127.0.0.1:4200', _external=True))
     redirect_to_index = redirect("/")
-    response = app.make_response(redirect_to_index )
-    response.set_cookie('access_token',value=access_token)
-    print('access_token', access_token)
-    response.set_cookie('refresh_token',value=refresh_token)
+    response = app.make_response(redirect_to_index)
+    response.set_cookie('access_token', value=access_token)
+    response.set_cookie('refresh_token', value=refresh_token)
     return response
-    # return jsonify({"access_token": access_token, "refresh_token": refresh_token})
 
 
 @app.route("/refresh_token", methods=['POST'])
@@ -102,7 +104,8 @@ def refresh_token():
     response_data = json.loads(post_request.text)
     return jsonify(response_data)
 
-################################### - SPOTIFY - ################################
+################################### - SPOTIFY - ##########################
+
 
 @app.route('/')
 def index():
@@ -111,11 +114,19 @@ def index():
 
 @app.route('/spotify-lyrics', methods=['POST'])
 def spotify_lyrics():
+    discogs = None
     r = request.get_json()
     artist = r['artist']
     title = r['title']
     lyrics_provider = r['lyrics_provider']
-    print(artist, title, lyrics_provider)
+    additional_information = r['additional_information']
+    additional_information = json.JSONDecoder().decode(additional_information)
+    if bool(additional_information['discogs']):
+        results = d.search('{} - {}'.format(artist, title), type='release')
+        release = results[0]
+        discogs = {'year': release.year, 'genres': ', '.join(release.genres),
+                   'country': release.country, 'styles': ', '.join(release.styles)}
+
     if lyrics_provider == 'amalgama':
         url = amalgama_url(artist, title)
         print(url)
@@ -125,10 +136,9 @@ def spotify_lyrics():
         print(url)
         lyrics = fetch_lyrsense(url)
     if lyrics:
-        return jsonify({"status": "new", "lyrics": lyrics})
+        return jsonify({"status": "found", "lyrics": lyrics, 'discogs': discogs})
     else:
         return jsonify({"status": "lyrics not found"})
-
 
 
 @app.route('/vk-lyrics', methods=['POST'])

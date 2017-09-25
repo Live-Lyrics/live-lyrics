@@ -3,6 +3,20 @@ $(document).ready(function() {
     localStorage[$(this).attr("name")] = $(this).val();
   });
 
+  var checkboxValues = JSON.parse(localStorage.getItem("checkboxValues")) || {};
+  var $checkboxes = $("#checkbox-container :checkbox");
+
+  $checkboxes.on("change", function() {
+    $checkboxes.each(function() {
+      checkboxValues[this.id] = this.checked;
+    });
+    localStorage.setItem("checkboxValues", JSON.stringify(checkboxValues));
+  });
+
+  $.each(checkboxValues, function(key, value) {
+    $("#" + key).prop("checked", value);
+  });
+
   setInterval(function() {
     get_lyrics();
   }, 5000);
@@ -11,7 +25,7 @@ $(document).ready(function() {
     document.cookie = `id=${$("#id").val()}`;
   });
 
-//  --------------- lyrsense ---------------
+  //  --------------- lyrsense ---------------
 
   $(".highlightLine").on("mouseenter mouseleave", function(event) {
     let line = $(this).attr("line");
@@ -72,14 +86,19 @@ function SpotifuSetLyrics(artist, title) {
     .post("/spotify-lyrics", {
       artist: artist,
       title: title,
-      lyrics_provider: localStorage.getItem("lyrics_provider")
+      lyrics_provider: localStorage.getItem("lyrics_provider"),
+      additional_information: localStorage.getItem("checkboxValues")
     })
     .then(function(response) {
-      console.log(response);
-      if (response.data.status == "new") {
-        console.log("lyrics", response.data.lyrics);
+      if (response.data.status == "found") {
         window.scrollTo(0, 0);
         $(".lyrics").html(response.data.lyrics);
+
+        if (response.data.discogs) {
+          let template = $("#discogs-template").html();
+          let html = Mustache.render(template, response.data.discogs);
+          $("#discogs-list").html(html);
+        }
       } else if (response.data.status == "lyrics not found") {
         console.log("lyrics not found");
       }
@@ -92,7 +111,6 @@ function refresh_token() {
       refresh_token: Cookies.get("refresh_token")
     })
     .then(function(response) {
-      console.log("spotify access token");
       Cookies.set("access_token", response.data.access_token);
     });
 }
@@ -111,11 +129,10 @@ function get_lyrics() {
 
     currentplayingtrack.then(function(response) {
       // if ((response.data.error.message = "The access token expired")) {
-      if ((response.data.error)) {
+      if (response.data.error) {
         console.log(response.data.error);
         refresh_token();
       } else {
-        console.log(response.data);
         artist = response.data.item.artists[0].name;
         title = response.data.item.name;
         let current = `${artist} ${title}`;

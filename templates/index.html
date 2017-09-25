@@ -9,15 +9,46 @@
   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
   <script src="../static/main.js"></script>
   <link rel="stylesheet" href="../static/main.css">
   <link rel="stylesheet" href="../static/amalgama.css">
-  <link rel="stylesheet" href="../static/lyrsense.css">
+  <link rel="stylesheet" href="../static/lyrsense.css"> {% raw %}
+  <script id="discogs-template" type="text/template">
+    <ul class="demo-list-icon mdl-list">
+      <li class="mdl-list__item">
+        <span class="mdl-list__item-primary-content">
+          <i class="material-icons mdl-list__item-icon">place</i>
+          {{ country }}
+      </span>
+      </li>
+
+      <li class="mdl-list__item">
+        <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">queue_music</i>Styles: 
+      {{ styles }}
+  </span>
+      </li>
+      <li class="mdl-list__item">
+        <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">queue_music</i>Genres: 
+      {{ genres }}
+    </span>
+      </li>
+      <li class="mdl-list__item">
+        <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">date_range</i>
+      {{ year }}
+    </span>
+      </li>
+    </ul>
+  </script>
+  {% endraw %}
+
 </head>
 
 <body>
@@ -26,7 +57,7 @@
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-title">Title</span>
+        <span class="mdl-layout-title">LiveLyrics</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
@@ -37,7 +68,7 @@
       </div>
     </header>
     <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
+      <span class="mdl-layout-title">LiveLyrics</span>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" href="">Link</a>
         <a class="mdl-navigation__link" href="">Link</a>
@@ -83,10 +114,25 @@
               </div>
             </div>
 
+            <div id="checkbox-container">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="youtube">
+                    <input type="checkbox" id="youtube" class="mdl-checkbox__input" checked>
+                    <span class="mdl-checkbox__label">YouTube</span>
+                  </label>
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="discogs">
+                    <input type="checkbox" id="discogs" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label">Discogs</span>
+                  </label>
+            </div>
+
+            <div id='discogs-list'>
+
+            </div>
+
             <div class="col-md-12">
               <div class="lyrics">
 
-                
+
               </div>
             </div>
 
