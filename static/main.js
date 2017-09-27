@@ -98,6 +98,16 @@ function SpotifuSetLyrics(artist, title) {
           let template = $("#discogs-template").html();
           let html = Mustache.render(template, response.data.discogs);
           $("#discogs-list").html(html);
+        } else {
+          $("#discogs-list").html('');
+        }
+        if (response.data.youtube) {
+          console.log(response.data.youtube);
+          let template = $("#youtube-template").html();
+          let html = Mustache.render(template, response.data.youtube);
+          $("#youtube-embed").html(html);
+        } else {
+          $("#youtube-embed").html('');
         }
       } else if (response.data.status == "lyrics not found") {
         console.log("lyrics not found");
@@ -127,12 +137,9 @@ function get_lyrics() {
   if (localStorage.getItem("broadcast_provider") == "spotify") {
     let currentplayingtrack = getCurrentPlayingTrack();
 
-    currentplayingtrack.then(function(response) {
-      // if ((response.data.error.message = "The access token expired")) {
-      if (response.data.error) {
-        console.log(response.data.error);
-        refresh_token();
-      } else {
+    currentplayingtrack
+      .then(function(response) {
+        console.log(response.data);
         artist = response.data.item.artists[0].name;
         title = response.data.item.name;
         let current = `${artist} ${title}`;
@@ -144,8 +151,11 @@ function get_lyrics() {
           SpotifuSetLyrics(artist, title);
           localStorage.setItem("old_song_name", current);
         }
-      }
-    });
+      })
+      .catch(function(error) {
+        console.log(error.request.responseText);
+        refresh_token();
+      });
   } else if (localStorage.getItem("broadcast_provider") == "vk") {
     console.log("vk");
     // $.post(

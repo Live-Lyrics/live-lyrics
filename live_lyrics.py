@@ -106,6 +106,13 @@ def refresh_token():
 
 ################################### - SPOTIFY - ##########################
 
+def get_youtube_id_from_release(release, title):
+    for i in release.videos: 
+        if title in i.title:
+            youtube_url = i.url
+            youtube_id = youtube_url.split('=')[1]
+            return youtube_id
+
 
 @app.route('/')
 def index():
@@ -114,29 +121,36 @@ def index():
 
 @app.route('/spotify-lyrics', methods=['POST'])
 def spotify_lyrics():
-    discogs = None
+    discogs = youtube =  release = None
+
     r = request.get_json()
     artist = r['artist']
     title = r['title']
     lyrics_provider = r['lyrics_provider']
     additional_information = r['additional_information']
     additional_information = json.JSONDecoder().decode(additional_information)
-    if bool(additional_information['discogs']):
-        results = d.search('{} - {}'.format(artist, title), type='release')
-        release = results[0]
+    if additional_information['discogs']:
+        release = d.search('{} - {}'.format(artist, title), type='release')[0]
         discogs = {'year': release.year, 'genres': ', '.join(release.genres),
                    'country': release.country, 'styles': ', '.join(release.styles)}
+    
+    if additional_information['youtube']:
+        if release:
+            youtube_id = get_youtube_id_from_release(release, title)
+            youtube = {'id': youtube_id}
+        else:
+            release = d.search('{} - {}'.format(artist, title), type='release')[0]
+            youtube_id = get_youtube_id_from_release(release, title)
+            youtube = {'id': youtube_id}
 
     if lyrics_provider == 'amalgama':
         url = amalgama_url(artist, title)
-        print(url)
         lyrics = fetch_amalgama(url)
     elif lyrics_provider == 'lyrsense':
         url = lyrsense_url(artist, title)
-        print(url)
         lyrics = fetch_lyrsense(url)
     if lyrics:
-        return jsonify({"status": "found", "lyrics": lyrics, 'discogs': discogs})
+        return jsonify({"status": "found", "lyrics": lyrics, 'discogs': discogs, 'youtube': youtube})
     else:
         return jsonify({"status": "lyrics not found"})
 
