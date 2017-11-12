@@ -1,0 +1,21 @@
+[[source]]
+
+name = "pypi"
+verify_ssl = true
+url = "https://pypi.python.org/simple"
+
+
+[packages]
+
+flask = "*"
+"beautifulsoup4" = "*"
+requests = "*"
+discogs-client = {git = "https://github.com/discogs/discogs_client"}
+google-api-python-client = "*"
+vk-api = "*"
+"html5lib" = "*"
+
+
+[dev-packages]
+
+pytest = "*"
