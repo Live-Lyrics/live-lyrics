@@ -1,0 +1,31 @@
+{
+  "name": "ll",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack --progress -p",
+    "dev": "webpack --progress",
+    "watch": "webpack --progress --watch",
+    "server": "webpack-dev-server --open"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "handlebars-loader": "^1.6.0",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
+  },
+  "dependencies": {
+    "@zirafa/bootstrap-grid-only": "^1.0.0",
+    "axios": "^0.17.0",
+    "handlebars": "^4.0.11",
+    "jquery": "^3.2.1",
+    "jquery.cookie": "^1.4.1",
+    "js-cookie": "^2.2.0",
+    "material-components-web": "^0.24.0"
+  }
+}

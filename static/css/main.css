@@ -1,0 +1,25 @@
+@import '~@material/typography/dist/mdc.typography.css';
+
+@import '~@material/toolbar/dist/mdc.toolbar.css';
+@import '~@material/drawer/dist/mdc.drawer.css';
+@import '~@material/list/dist/mdc.list.css';
+
+@import '~@material/form-field/dist/mdc.form-field.css';
+@import '~@material/checkbox/dist/mdc.checkbox.css';
+@import '~@material/radio/dist/mdc.radio.css';
+
+@import '~@zirafa/bootstrap-grid-only/css/grid12.css';
+
+.Btn{
+    background:#2ebd59;
+    color:#fcfcfc;
+    padding:8px 25px;
+    border:1px solid transparent;
+    border-radius:25px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .Btn:focus, .Btn:active{
+    border:1px solid #638e00;
+  }
+  

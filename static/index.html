@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Drawer (Temporary) - Material Components Catalog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="dist/styles.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body class="mdc-typography demo-body">
+
+  <div class="mdc-toolbar mdc-toolbar--fixed">
+    <div class="mdc-toolbar__row">
+      <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+        <button class="demo-menu material-icons mdc-toolbar__menu-icon">menu</button>
+        <span class="mdc-toolbar__title catalog-title">Live Lyrics</span>
+      </section>
+    </div>
+  </div>
+
+  <aside class="mdc-temporary-drawer" data-mdc-auto-init="MDCTemporaryDrawer">
+    <nav class="mdc-temporary-drawer__drawer">
+      <header class="mdc-temporary-drawer__header">
+        <div class="mdc-temporary-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary">
+          Header here
+        </div>
+      </header>
+      <nav class="mdc-temporary-drawer__content mdc-list-group">
+        <div id="icon-with-text-demo" class="mdc-list">
+          <a class="mdc-list-item mdc-temporary-drawer--selected" href="#">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">inbox</i>Main
+          </a>
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">star</i>Shazam
+          </a>
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">send</i>VK to Spotify
+          </a>
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">drafts</i>Organize album
+          </a>
+        </div>
+
+        <hr class="mdc-list-divider">
+
+        <div class="mdc-list">
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">email</i>All Mail
+          </a>
+        </div>
+      </nav>
+    </nav>
+  </aside>
+
+  <main class="demo-main mdc-toolbar-fixed-adjust">
+
+    <div class="container">
+      <div class="row">
+
+        <form action="/login">
+          <button type="submit" class="Btn" id="loginBtn login-button">Spotify Login</button>
+        </form>
+
+        <div class="mdc-form-field">
+
+          <div class="mdc-radio">
+            <input class="mdc-radio__native-control stored_radio" type="radio" id="vk" name="broadcast_provider" value="vk">
+            <div class="mdc-radio__background">
+              <div class="mdc-radio__outer-circle"></div>
+              <div class="mdc-radio__inner-circle"></div>
+            </div>
+          </div>
+          <label id="radio-3-label" for="radio-3">vk</label>
+
+          <div class="mdc-radio">
+            <input class="mdc-radio__native-control stored_radio" type="radio" id="spotify" name="broadcast_provider" value="spotify">
+            <div class="mdc-radio__background">
+              <div class="mdc-radio__outer-circle"></div>
+              <div class="mdc-radio__inner-circle"></div>
+            </div>
+          </div>
+          <label id="radio-4-label" for="radio-4">spotify</label>
+        </div>
+
+
+        <div class="mdc-form-field">
+
+          <div class="mdc-radio">
+            <input class="mdc-radio__native-control stored_radio" type="radio" id="amalgama" name="lyrics_provider" value="amalgama">
+            <div class="mdc-radio__background">
+              <div class="mdc-radio__outer-circle"></div>
+              <div class="mdc-radio__inner-circle"></div>
+            </div>
+          </div>
+          <label id="radio-1-label" for="radio-1">amalgama</label>
+
+          <div class="mdc-radio">
+            <input class="mdc-radio__native-control stored_radio" type="radio" id="lyrsense" name="lyrics_provider" value="lyrsense">
+            <div class="mdc-radio__background">
+              <div class="mdc-radio__outer-circle"></div>
+              <div class="mdc-radio__inner-circle"></div>
+            </div>
+          </div>
+          <label id="radio-2-label" for="radio-2">lyrsense</label>
+        </div>
+
+        <div class="mdc-form-field" id="checkbox-container">
+          <div class="mdc-checkbox">
+            <input type="checkbox" id="youtube" class="mdc-checkbox__native-control" />
+            <div class="mdc-checkbox__background">
+              <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+              </svg>
+              <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+          </div>
+          <label for="youtube">youtube</label>
+
+          <div class="mdc-checkbox youtube">
+            <input type="checkbox" id="discogs" class="mdc-checkbox__native-control" />
+            <div class="mdc-checkbox__background">
+              <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                <path class="mdc-checkbox__checkmark__path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+              </svg>
+              <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+          </div>
+          <label for="discogs">discogs</label>
+
+        </div>
+
+        <div class="col-md-12">
+          <div id='discogs-list'>
+          </div>
+
+          <div id='youtube-embed'>
+          </div>
+
+          <div class="lyrics">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="dist/bundle.js"></script>
+</body>
+
+</html>

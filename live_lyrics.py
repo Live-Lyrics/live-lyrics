@@ -12,7 +12,7 @@ from lyrics_url import amalgama_url, lyrsense_url
 from lyrics_parser import fetch_amalgama, fetch_lyrsense
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static/dist", template_folder="static")
 # vk = sign_in()
 
 d = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))

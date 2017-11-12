@@ -1,20 +1,41 @@
+import $ from 'jquery';
+import * as cookie from 'jquery.cookie';
+import * as Cookies from "js-cookie";
+
+import axios from 'axios';
+
+import {MDCToolbar, MDCToolbarFoundation} from '@material/toolbar';
+import {MDCTemporaryDrawer, MDCTemporaryDrawerFoundation, util} from '@material/drawer';
+
+import {MDCFormField, MDCFormFieldFoundation} from '@material/form-field';
+import {MDCCheckbox, MDCCheckboxFoundation} from '@material/checkbox';
+import {MDCRadio, MDCRadioFoundation} from '@material/radio';
+
+import discogs_template from '../templates/discogs.handlebars';
+import youtube_template from '../templates/youtube.handlebars';
+
+import '../css/lyrsense.css';
+import '../css/amalgama.css';
+import '../css/main.css';
+
+let drawer = new MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
+document.querySelector('.demo-menu').addEventListener('click', () => drawer.open = true);
+
 $(document).ready(function() {
-  $(".stored").on("change", function() {
+  loadRadioState();
+
+  $(".stored_radio").on("change", function() {
     localStorage[$(this).attr("name")] = $(this).val();
   });
 
-  var checkboxValues = JSON.parse(localStorage.getItem("checkboxValues")) || {};
-  var $checkboxes = $("#checkbox-container :checkbox");
+  let checkboxValues = JSON.parse(localStorage.getItem("checkboxValues")) || {};
+  let $checkboxes = $("#checkbox-container :checkbox");
 
   $checkboxes.on("change", function() {
     $checkboxes.each(function() {
       checkboxValues[this.id] = this.checked;
     });
     localStorage.setItem("checkboxValues", JSON.stringify(checkboxValues));
-  });
-
-  $.each(checkboxValues, function(key, value) {
-    $("#" + key).prop("checked", value);
   });
 
   setInterval(function() {
@@ -79,6 +100,17 @@ $(document).ready(function() {
   }
 });
 
+function loadRadioState () {
+  $("#"+localStorage.getItem('broadcast_provider')).prop("checked", true);
+  $("#"+localStorage.getItem('lyrics_provider')).prop("checked", true);
+
+  let checkboxValues = JSON.parse(localStorage.getItem("checkboxValues"));
+
+  $.each(checkboxValues, function(key, value) {
+    $("#" + key).prop("checked", value);
+  });
+}
+
 //  --------------- lyrsense ---------------
 
 function SpotifuSetLyrics(artist, title) {
@@ -95,17 +127,16 @@ function SpotifuSetLyrics(artist, title) {
         $(".lyrics").html(response.data.lyrics);
 
         if (response.data.discogs) {
-          let template = $("#discogs-template").html();
-          let html = Mustache.render(template, response.data.discogs);
-          $("#discogs-list").html(html);
+          let discogs = discogs_template(response.data.discogs);
+          let discogs_list = document.getElementById('discogs-list');
+          discogs_list.innerHTML = discogs;
         } else {
           $("#discogs-list").html('');
         }
         if (response.data.youtube) {
-          console.log(response.data.youtube);
-          let template = $("#youtube-template").html();
-          let html = Mustache.render(template, response.data.youtube);
-          $("#youtube-embed").html(html);
+          let youtube = youtube_template(response.data.youtube);
+          let youtube_embed = document.getElementById('youtube-embed');
+          youtube_embed.innerHTML = youtube;
         } else {
           $("#youtube-embed").html('');
         }
@@ -139,9 +170,8 @@ function get_lyrics() {
 
     currentplayingtrack
       .then(function(response) {
-        console.log(response.data);
-        artist = response.data.item.artists[0].name;
-        title = response.data.item.name;
+        let artist = response.data.item.artists[0].name;
+        let title = response.data.item.name;
         let current = `${artist} ${title}`;
 
         if (localStorage.getItem("old_song_name") == current) {
