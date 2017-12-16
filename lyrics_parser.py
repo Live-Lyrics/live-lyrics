@@ -16,7 +16,10 @@ def fetch_amalgama(url):
 
 
 def fetch_lyrsense(url):
-    r = requests.get(url)
+    session = requests.Session()
+    headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit 537.36 (KHTML, like Gecko) Chrome","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"}
+    r = session.get(url, headers=headers)
+
     bsObj = BeautifulSoup(r.text, "html5lib")
     table = bsObj.find("table", {"id": "textsTable"})
 
