@@ -1,5 +1,3 @@
-import $ from 'jquery';
-import * as cookie from 'jquery.cookie';
 import * as Cookies from "js-cookie";
 
 import axios from 'axios';
@@ -11,8 +9,10 @@ import {MDCFormField, MDCFormFieldFoundation} from '@material/form-field';
 import {MDCCheckbox, MDCCheckboxFoundation} from '@material/checkbox';
 import {MDCRadio, MDCRadioFoundation} from '@material/radio';
 
-import discogs_template from '../templates/discogs.handlebars';
-import youtube_template from '../templates/youtube.handlebars';
+import discogsTemplate from '../templates/discogs.handlebars';
+import youtubeTemplate from '../templates/youtube.handlebars';
+
+import domready from 'domready';
 
 import '../css/lyrsense.css';
 import '../css/amalgama.css';
@@ -21,7 +21,8 @@ import '../css/main.css';
 let drawer = new MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
 document.querySelector('.demo-menu').addEventListener('click', () => drawer.open = true);
 
-$(document).ready(function() {
+
+domready(function () {
   loadRadioState();
 
   $(".stored_radio").on("change", function() {
@@ -29,7 +30,7 @@ $(document).ready(function() {
   });
 
   let checkboxValues = JSON.parse(localStorage.getItem("checkboxValues")) || {};
-  let $checkboxes = $("#checkbox-container :checkbox");
+  let $checkboxes = $("#checkbox-container").find(":checkbox");
 
   $checkboxes.on("change", function() {
     $checkboxes.each(function() {
@@ -38,66 +39,11 @@ $(document).ready(function() {
     localStorage.setItem("checkboxValues", JSON.stringify(checkboxValues));
   });
 
-  setInterval(function() {
-    get_lyrics();
-  }, 5000);
+  setInterval(() => getLyrics(), 5000);
 
   $("#set_id").on("click", function() {
     document.cookie = `id=${$("#id").val()}`;
   });
-
-  //  --------------- lyrsense ---------------
-
-  $(".highlightLine").on("mouseenter mouseleave", function(event) {
-    let line = $(this).attr("line");
-    $(".line" + line).toggleClass("lighted");
-  });
-
-  $(".fontBigger").click(function() {
-    var size = $("#fr_text").css("font-size");
-    var num = parseInt(size.match(/\d+/), 10);
-    num += 2;
-    var inter = num * 1.5;
-
-    $("#fr_text").css("font-size", num + "px");
-    $("#fr_text").css("line-height", inter + "px");
-    $("#ru_text").css("font-size", num + "px");
-    $("#ru_text").css("line-height", inter + "px");
-
-    $.cookie("fontSize", num + "px", {
-      expires: 3000000,
-      path: "/"
-    });
-  });
-
-  $(".fontSmaller").click(function() {
-    var size = $("#fr_text").css("font-size");
-    var num = parseInt(size.match(/\d+/), 10);
-    num -= 2;
-    var inter = num * 1.5;
-
-    $("#fr_text").css("font-size", num + "px");
-    $("#fr_text").css("line-height", inter + "px");
-    $("#ru_text").css("font-size", num + "px");
-    $("#ru_text").css("line-height", inter + "px");
-
-    $.cookie("fontSize", num + "px", {
-      expires: 3000000,
-      path: "/"
-    });
-  });
-
-  if ($.cookie("fontSize")) {
-    var size = $.cookie("fontSize");
-    var num = parseInt(size.match(/\d+/), 10);
-    var inter = num * 1.5;
-
-    $("#fr_text").css("font-size", size);
-    $("#ru_text").css("font-size", size);
-
-    $("#fr_text").css("line-height", inter + "px");
-    $("#ru_text").css("line-height", inter + "px");
-  }
 });
 
 function loadRadioState () {
@@ -111,8 +57,6 @@ function loadRadioState () {
   });
 }
 
-//  --------------- lyrsense ---------------
-
 function SpotifuSetLyrics(artist, title) {
   axios
     .post("/spotify-lyrics", {
@@ -122,31 +66,31 @@ function SpotifuSetLyrics(artist, title) {
       additional_information: localStorage.getItem("checkboxValues")
     })
     .then(function(response) {
-      if (response.data.status == "found") {
+      if (response.data.status === "found") {
         window.scrollTo(0, 0);
-        $(".lyrics").html(response.data.lyrics);
+        $("#lyrics").html(response.data.lyrics);
 
         if (response.data.discogs) {
-          let discogs = discogs_template(response.data.discogs);
+          let discogs = discogsTemplate(response.data.discogs);
           let discogs_list = document.getElementById('discogs-list');
           discogs_list.innerHTML = discogs;
         } else {
           $("#discogs-list").html('');
         }
         if (response.data.youtube) {
-          let youtube = youtube_template(response.data.youtube);
+          let youtube = youtubeTemplate(response.data.youtube);
           let youtube_embed = document.getElementById('youtube-embed');
           youtube_embed.innerHTML = youtube;
         } else {
           $("#youtube-embed").html('');
         }
-      } else if (response.data.status == "lyrics not found") {
+      } else if (response.data.status === "lyrics not found") {
         console.log("lyrics not found");
       }
     });
 }
 
-function refresh_token() {
+function refreshToken() {
   axios
     .post("/refresh_token", {
       refresh_token: Cookies.get("refresh_token")
@@ -164,8 +108,8 @@ function getCurrentPlayingTrack() {
   });
 }
 
-function get_lyrics() {
-  if (localStorage.getItem("broadcast_provider") == "spotify") {
+function getLyrics() {
+  if (localStorage.getItem("broadcast_provider") === "spotify") {
     let currentplayingtrack = getCurrentPlayingTrack();
 
     currentplayingtrack
@@ -174,7 +118,7 @@ function get_lyrics() {
         let title = response.data.item.name;
         let current = `${artist} ${title}`;
 
-        if (localStorage.getItem("old_song_name") == current) {
+        if (localStorage.getItem("old_song_name") === current) {
           console.log("song not change");
         } else {
           console.log("new song");
@@ -184,9 +128,9 @@ function get_lyrics() {
       })
       .catch(function(error) {
         console.log(error.request.responseText);
-        refresh_token();
+        refreshToken();
       });
-  } else if (localStorage.getItem("broadcast_provider") == "vk") {
+  } else if (localStorage.getItem("broadcast_provider") === "vk") {
     console.log("vk");
     // $.post(
     //   "/vk-lyrics",
@@ -195,7 +139,7 @@ function get_lyrics() {
     //     if (data.status == "new") {
     //       localStorage.setItem("old_song_name", data.song);
     //       window.scrollTo(0, 0);
-    //       $(".lyrics").html(data.lyrics);
+    //       $("#lyrics").html(data.lyrics);
     //     } else {
     //       console.log(data.status);
     //     }
