@@ -2,7 +2,7 @@ import csv
 
 import pytest
 
-from lyrics_url import amalgama_url, vk_normalize
+from utils.lyrics_url import amalgama_url, vk_normalize
 
 
 def get_vk():

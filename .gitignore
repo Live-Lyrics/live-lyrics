@@ -4,9 +4,6 @@
 .cache
 __pycache__
 
-.floo
-.flooignore
-
 Examples
 vk_config.v2.json
 
