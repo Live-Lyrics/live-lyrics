@@ -3,7 +3,7 @@ import json
 import base64
 from urllib.parse import urlencode
 
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect
 import requests
 import discogs_client
 
@@ -12,7 +12,7 @@ from lyrics_url import amalgama_url, lyrsense_url
 from lyrics_parser import fetch_amalgama, fetch_lyrsense
 
 
-app = Flask(__name__, static_folder="static/dist/static", template_folder="static/dist/templates")
+app = Flask(__name__)
 # vk = sign_in()
 
 d = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))
@@ -20,8 +20,8 @@ d = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('D
 
 #################################### - SPOTIFY - #########################
 #  Client Keys
-CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
-CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
+SPOTIFY_CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
 
 # Spotify URLS
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -47,7 +47,7 @@ auth_query_parameters = {
     "scope": SCOPE,
     # "state": STATE,
     # "show_dialog": SHOW_DIALOG_str,
-    "client_id": CLIENT_ID
+    "client_id": SPOTIFY_CLIENT_ID
 }
 
 
@@ -69,7 +69,7 @@ def callback():
         "redirect_uri": REDIRECT_URI
     }
 
-    base64encoded = base64.b64encode(bytes("{}:{}".format(CLIENT_ID, CLIENT_SECRET), 'utf-8'))
+    base64encoded = base64.b64encode(bytes("{}:{}".format(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), 'utf-8'))
     headers = {"Authorization": "Basic {}".format(base64encoded.decode('utf-8'))}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload, headers=headers)
 
@@ -80,8 +80,7 @@ def callback():
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
 
-    # redirect_to_index = redirect(url_for('http://127.0.0.1:4200', _external=True))
-    redirect_to_index = redirect("/")
+    redirect_to_index = redirect("http://localhost:9000/")
     response = app.make_response(redirect_to_index)
     response.set_cookie('access_token', value=access_token)
     response.set_cookie('refresh_token', value=refresh_token)
@@ -98,7 +97,7 @@ def refresh_token():
         "grant_type": "refresh_token",
         "refresh_token": refresh_token
     }
-    base64encoded = base64.b64encode(bytes("{}:{}".format(CLIENT_ID, CLIENT_SECRET), 'utf-8'))
+    base64encoded = base64.b64encode(bytes("{}:{}".format(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), 'utf-8'))
     headers = {"Authorization": "Basic {}".format(base64encoded.decode('utf-8'))}
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload, headers=headers)
     response_data = json.loads(post_request.text)

@@ -3,17 +3,13 @@
 
 .cache
 __pycache__
-ENV
 
 .floo
 .flooignore
-
-static/node_modules
-static/package-lock.json
-
-static/dist
 
 Examples
 vk_config.v2.json
 
 Pipfile.lock
+
+.env
