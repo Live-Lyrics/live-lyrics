@@ -1,12 +1,7 @@
 .idea
 .vscode
 
-.cache
-__pycache__
+.env
 
 Examples
 vk_config.v2.json
-
-Pipfile.lock
-
-.env

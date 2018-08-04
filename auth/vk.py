@@ -13,7 +13,7 @@ def captcha_handler(captcha):
     return captcha.try_again(key)
 
 
-def sign_in():
+def vk_sign_in():
     login, password = os.environ.get('VK_LOGIN'), os.environ.get('VK_PASSWORD')
     vk_session = vk_api.VkApi(login, password, captcha_handler=captcha_handler)
     vk_session.http.proxies = proxies
