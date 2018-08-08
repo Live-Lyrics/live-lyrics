@@ -4,11 +4,9 @@ import json
 from flask import Flask, jsonify, request
 from werkzeug.utils import secure_filename
 import discogs_client
-import amalgama
 
 import utils
 # from auth.vk import vk_sign_in
-
 from auth.spotify import spotify
 
 UPLOAD_FOLDER = 'static/mp3'
@@ -19,7 +17,7 @@ app.register_blueprint(spotify)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # vk = vk_sign_in()
 
-d = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))
+discogs = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))
 
 acr_cloud_config = {
     'host': os.environ.get('HOST'),
@@ -72,7 +70,7 @@ def spotify_lyrics():
     additional_information = r['additional_information']
     additional_information = json.JSONDecoder().decode(additional_information)
     if additional_information['discogs']:
-        release = d.search('{} - {}'.format(artist, title), type='release')[0]
+        release = discogs.search('{} - {}'.format(artist, title), type='release')[0]
         discogs_data = {'year': release.year, 'genres': ', '.join(release.genres),
                         'country': release.country, 'styles': ', '.join(release.styles)}
     
@@ -81,15 +79,14 @@ def spotify_lyrics():
             youtube_id = utils.get_youtube_id_from_release(release, title)
             youtube = {'id': youtube_id}
         else:
-            release = d.search('{} - {}'.format(artist, title), type='release')[0]
+            release = discogs.search('{} - {}'.format(artist, title), type='release')[0]
             youtube_id = utils.get_youtube_id_from_release(release, title)
             youtube = {'id': youtube_id}
 
     artist, title = map(utils.normalize, [artist, title])
 
     if lyrics_provider == 'amalgama':
-        url = amalgama.get_url(artist, title)
-        lyrics = amalgama.get_html(url)
+        lyrics = utils.amalgama_lyrics(artist, title)
     elif lyrics_provider == 'lyrsense':
         url = utils.lyrsense_url(artist, title)
         lyrics = utils.fetch_lyrsense(url)

@@ -8,6 +8,8 @@ flask = "*"
 requests = "*"
 discogs-client = {editable = true, git = "https://github.com/discogs/discogs_client"}
 amalgama-pq = {editable = true, git = "https://github.com/andriyor/amalgama-pq.git"}
+cachecontrol = "*"
+lockfile = "*"
 
 [dev-packages]
 
