@@ -4,12 +4,10 @@ import json
 from flask import Flask, jsonify, request
 from werkzeug.utils import secure_filename
 import discogs_client
+import amalgama
 
-from utils import lyrics_url
-from utils import lyrics_parser
-from utils import discogs
-from utils import acr_identify
-from auth.vk import vk_sign_in
+import utils
+# from auth.vk import vk_sign_in
 
 from auth.spotify import spotify
 
@@ -36,7 +34,7 @@ def allowed_file(filename):
 
 
 def recognize(file_path):
-    data = acr_identify.fetch_metadata(file_path)
+    data = utils.fetch_metadata(file_path)
     if data['status']['code'] == 0:
         filename_w_ext = os.path.basename(file_path)
         json_filename, file_extension = os.path.splitext(filename_w_ext)
@@ -80,19 +78,21 @@ def spotify_lyrics():
     
     if additional_information['youtube']:
         if release:
-            youtube_id = discogs.get_youtube_id_from_release(release, title)
+            youtube_id = utils.get_youtube_id_from_release(release, title)
             youtube = {'id': youtube_id}
         else:
             release = d.search('{} - {}'.format(artist, title), type='release')[0]
-            youtube_id = discogs.get_youtube_id_from_release(release, title)
+            youtube_id = utils.get_youtube_id_from_release(release, title)
             youtube = {'id': youtube_id}
 
+    artist, title = map(utils.normalize, [artist, title])
+
     if lyrics_provider == 'amalgama':
-        url = lyrics_url.amalgama_url(artist, title)
-        lyrics = lyrics_parser.fetch_amalgama(url)
+        url = amalgama.get_url(artist, title)
+        lyrics = amalgama.get_html(url)
     elif lyrics_provider == 'lyrsense':
-        url = lyrics_url.lyrsense_url(artist, title)
-        lyrics = lyrics_parser.fetch_lyrsense(url)
+        url = utils.lyrsense_url(artist, title)
+        lyrics = utils.fetch_lyrsense(url)
     if lyrics:
         return jsonify({"status": "found", "lyrics": lyrics, 'discogs': discogs_data, 'youtube': youtube})
     else:
