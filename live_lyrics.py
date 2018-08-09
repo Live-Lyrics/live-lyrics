@@ -2,66 +2,27 @@ import os
 import json
 
 from flask import Flask, jsonify, request
-from werkzeug.utils import secure_filename
 import discogs_client
 
 import utils
 # from auth.vk import vk_sign_in
 from auth.spotify import spotify
+from recognition import recognition
 
 UPLOAD_FOLDER = 'static/mp3'
-ALLOWED_EXTENSIONS = set(['mp3', 'wav', 'ogg'])
 
 app = Flask(__name__)
 app.register_blueprint(spotify)
+app.register_blueprint(recognition)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # vk = vk_sign_in()
 
 discogs = discogs_client.Client('ExampleApplication/0.1', user_token=os.environ.get('DISCOGS_TOKEN'))
 
-acr_cloud_config = {
-    'host': os.environ.get('HOST'),
-    'access_key': os.environ.get('ACCESS_KEY'),
-    'access_secret': os.environ.get('ACCESS_SECRET'),
-    'timeout': 5  # seconds
-}
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def recognize(file_path):
-    data = utils.fetch_metadata(file_path)
-    if data['status']['code'] == 0:
-        filename_w_ext = os.path.basename(file_path)
-        json_filename, file_extension = os.path.splitext(filename_w_ext)
-        with open(f'static/json/{json_filename}.json', 'w', encoding='utf8') as outfile:
-            json.dump(data, outfile, indent=4, sort_keys=True)
-
-        artist = data['metadata']['music'][0]['artists'][0]['name']
-        title = data['metadata']['music'][0]['title']
-        return jsonify({"artist": artist, 'title': title})
-    else:
-        return 'songs not found'
-
-
-@app.route('/blob', methods=['POST'])
-def getblob():
-    if 'file' not in request.files:
-        return jsonify(status="No file part")
-    file = request.files['file']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        return recognize(file_path)
-    return jsonify({"status": "found"})
-
 
 @app.route('/spotify-lyrics', methods=['POST'])
 def spotify_lyrics():
-    discogs_data = youtube = release = None
+    discogs_data = youtube = release = lyrics = None
 
     r = request.get_json()
     artist = r['artist']

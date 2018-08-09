@@ -6,8 +6,8 @@ import time
 
 import requests
 
-access_key = os.environ.get('ACCESS_KEY')
-access_secret = bytes(os.environ.get('ACCESS_SECRET'), 'utf-8')
+access_key = os.environ.get('ACR_ACCESS_KEY')
+access_secret = bytes(os.environ.get('ACR_ACCESS_SECRET'), 'utf-8')
 requrl = "http://{}/v1/identify".format(os.environ.get('HOST'))
 
 http_method = "POST"
