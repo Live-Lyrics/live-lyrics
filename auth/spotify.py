@@ -70,7 +70,7 @@ def callback():
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
 
-    redirect_to_index = redirect("http://localhost:9000/")
+    redirect_to_index = redirect("http://localhost:3000/")
     response = make_response(redirect_to_index)
     response.set_cookie('access_token', value=access_token)
     response.set_cookie('refresh_token', value=refresh_token)
