@@ -10,6 +10,7 @@ discogs-client = {editable = true, git = "https://github.com/discogs/discogs_cli
 amalgama-pq = {editable = true, git = "https://github.com/andriyor/amalgama-pq.git"}
 cachecontrol = "*"
 lockfile = "*"
+acrcloud-py = {editable = true, git = "https://github.com/andriyor/acrcloud-py.git"}
 
 [dev-packages]
 

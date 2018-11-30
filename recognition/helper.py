@@ -2,8 +2,11 @@ import json
 import os
 
 from flask import jsonify
+from acrcloud import ACRCloud
 
-import utils
+ACR_access_key = os.environ.get('ACR_ACCESS_KEY')
+ACR_access_secret = bytes(os.environ.get('ACR_ACCESS_SECRET'), 'utf-8')
+acr = ACRCloud('eu-west-1.api.acrcloud.com', ACR_access_key, ACR_access_secret)
 
 ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg'}
 
@@ -13,7 +16,7 @@ def allowed_file(filename):
 
 
 def recognize(file_path):
-    data = utils.fetch_metadata(file_path)
+    data = acr.identify(file_path)
     if data['status']['code'] == 0:
         filename_w_ext = os.path.basename(file_path)
         json_filename, file_extension = os.path.splitext(filename_w_ext)
